@@ -1,6 +1,6 @@
 ![](https://img.shields.io/badge/DesafioLATAM-important)
 
-# Pokemon Gallery
+# Roommates App
 
 > A Roommates expenses app. On the backend works with a Node server that serves like an API RESTful to GET, POST, UPDATE and DELETE expenses. The frontend is made with Bootstrap 4.5
 
