@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    />
+  </head>
+  <body class="p-4">
+    <h1 class="">Roommates</h1>
+    <hr class="mb-5 bg-light w-25 mx-auto" />
+    <div class="row w-100 m-auto">
+      <div class="col-4">
+        <h5>Roommates</h5>
+        <button class="btn text-white mb-2" onclick="nuevoRoommate()">
+          Agregar roommate
+        </button>
+        <table class="table">
+          <thead class="text-white">
+            <th>Nombre</th>
+            <th>Debe</th>
+            <th>Recibe</th>
+          </thead>
+          <tbody class="text-white" id="roommates"></tbody>
+        </table>
+      </div>
+      <div class="col-4">
+        <div class="border rounded p-2 m-auto p-4">
+          <h4>Agregar Gasto</h4>
+          <hr class="bg-light w-25 mx-auto" />
+
+          <div class="d-flex flex-column align-items-center">
+            <h6>Roommate</h6>
+            <select
+              class="form-control w-50 mb-2"
+              id="roommatesSelect"
+            ></select>
+            <h6>Descripción</h6>
+            <textarea class="form-control w-50 mb-2" id="descripcion">
+Articulos de limpieza</textarea
+            >
+
+            <h6>Monto:</h6>
+            <input
+              class="form-control w-50 mb-2"
+              id="monto"
+              type="number"
+              value="15000"
+            />
+          </div>
+          <div class="d-block my-1">
+            <button class="btn text-white m-auto" onclick="agregarGasto()">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div>
+          <h4>Historial</h4>
+          <hr class="bg-light w-25 mx-auto" />
+
+          <table class="table">
+            <thead class="text-white">
+              <th>Nombre</th>
+              <th>Comentario</th>
+              <th>Monto</th>
+              <th>-</th>
+            </thead>
+            <tbody class="text-white" id="gastosHistorial"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="border rounded p-2 m-auto p-4">
+              <h4>Editar Gasto</h4>
+              <hr class="bg-light w-25 mx-auto" />
+
+              <div class="d-flex flex-column align-items-center">
+                <h6>Roommate</h6>
+                <select
+                  class="form-control w-50 mb-2"
+                  id="roommatesSelectModal"
+                ></select>
+                <h6>Descripción</h6>
+                <textarea class="form-control w-50 mb-2" id="descripcionModal">
+    Articulos de limpieza</textarea
+                >
+
+                <h6>Monto:</h6>
+                <input
+                  class="form-control w-50 mb-2"
+                  id="montoModal"
+                  type="number"
+                  value="20000"
+                />
+              </div>
+              <div class="d-block my-1">
+                <button class="btn text-white m-auto" onclick="updateGasto()">
+                  Agregar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js "
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      let roommates = [];
+      let gastos = [];
+      let gastoEditing = null;
+      const getRoommates = async () => {
+        const res = await fetch("http://localhost:3000/roommates");
+        const data = await res.json();
+        roommates = data.roommates;
+      };
+      const getGastos = async () => {
+        const res = await fetch("http://localhost:3000/gastos");
+        const data = await res.json();
+        gastos = data.gastos;
+      };
+
+      const imprimir = async () => {
+        try {
+          await getRoommates();
+          await getGastos();
+          $("#roommates").html("");
+          $("#roommatesSelect").html("");
+          $("#roommatesSelectModal").html("");
+          roommates.forEach((r) => {
+            $("#roommatesSelect").append(`
+          <option value="${r.nombre}">${r.nombre}</option>
+          `);
+            $("#roommatesSelectModal").append(`
+          <option value="${r.nombre}">${r.nombre}</option>
+          `);
+            $("#roommates").append(`
+                  <tr>
+                    <td>${r.nombre}</td>
+                    <td class="text-danger">${r.debe ? r.debe : "-"}</td>
+                    <td class="text-success">${r.recibe ? r.recibe : "-"}</td>
+                  </tr>
+              `);
+          });
+          $("#gastosHistorial").html("");
+          gastos.forEach((g) => {
+            $("#gastosHistorial").append(`
+                <tr>
+                  <td>${g.roommate}</td>
+                  <td>${g.descripcion}</td>
+                  <td>${g.monto}</td>
+                  <td class="d-flex align-items-center justify-content-between">
+                    <i class="fas fa-edit text-warning" onclick="editGasto('${g.id}')" data-toggle="modal" data-target="#exampleModal"></i>
+                    <i class="fas fa-trash-alt text-danger" onclick="deleteGasto('${g.id}')" ></i>
+                  </td>
+                </tr>
+              `);
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      };
+
+      const nuevoRoommate = () => {
+        fetch("http://localhost:3000/roommate", { method: "POST" })
+          .then((res) => res.json())
+          .then(() => {
+            imprimir();
+          });
+      };
+
+      const agregarGasto = async () => {
+        const roommateSelected = $("#roommatesSelect").val();
+        const descripcion = $("#descripcion").val();
+        const monto = Number($("#monto").val());
+        await fetch("http://localhost:3000/gasto", {
+          method: "POST",
+          body: JSON.stringify({
+            roommate: roommateSelected,
+            descripcion,
+            monto,
+          }),
+        });
+        imprimir();
+      };
+
+      const deleteGasto = async (id) => {
+        await fetch("http://localhost:3000/gasto?id=" + id, {
+          method: "DELETE",
+        });
+        imprimir();
+      };
+
+      const updateGasto = async () => {
+        const roommateSelected = $("#roommatesSelectModal").val();
+        const descripcion = $("#descripcionModal").val();
+        const monto = Number($("#montoModal").val());
+        await fetch("http://localhost:3000/gasto?id=" + gastoEditing, {
+          method: "PUT",
+          body: JSON.stringify({
+            roommate: roommateSelected,
+            descripcion,
+            monto,
+          }),
+        });
+        $("#exampleModal").modal("hide");
+        imprimir();
+      };
+
+      const editGasto = (id) => {
+        gastoEditing = id;
+        const { roommate, descripcion, monto } = gastos.find((g) => g.id == id);
+        $("#roommatesSelectModal").val(roommate);
+        $("#descripcionModal").html(descripcion);
+        $("#montoModal").val(monto);
+      };
+
+      imprimir();
+    </script>
+
+    <style>
+      body {
+        text-align: center;
+        color: white;
+        text-shadow: 0px 0px 3px black;
+        background: #23036a;
+      }
+
+      .modal-body {
+        color: black;
+        text-shadow: none;
+      }
+
+      button {
+        background: #6200ee !important;
+      }
+      i {
+        cursor: pointer;
+      }
+    </style>
+  </body>
+</html>
