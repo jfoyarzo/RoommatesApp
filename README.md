@@ -96,6 +96,7 @@ node index.js
 
 This will serve the frontend on:<br>
 http://localhost:3000 <br>
+For the mailing functionality to work, valid credentials must be provided in the `mailer.js` file.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
