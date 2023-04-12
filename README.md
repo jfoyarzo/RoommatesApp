@@ -25,7 +25,7 @@
 
 # 📖 Roommates App <a name="about-project"></a>
 
-**Roommates App** is a Node.js app that consists of an API RESTful that can GET, POST, UPDATE and DELETE roommates expenses. The server is built using the `http` module and file manipulation is made by `fs`. It also has the functionality to send emails to all the roommates each time a new expense is registered. The frontend is rendered server-side and is built using Bootstrap 4.5. 
+**Roommates App** is a Node.js app that consists of an API RESTful that can GET, POST, UPDATE and DELETE roommates expenses. The server is built using the `http` module and file manipulation is made by `fs`. It also has the functionality to send emails to all the roommates each time a new expense is registered. The frontend is rendered dynamically by the server and is built using Bootstrap 4.5. 
 
 ## 🛠 Built With <a name="built-with"></a>
 
